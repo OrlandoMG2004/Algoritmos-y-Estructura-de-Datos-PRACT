@@ -1,0 +1,77 @@
+public class MergeSortMejorado {
+
+    public static void mergeSort(int[] arr) {
+        if (arr == null || arr.length <= 1) {
+            return;
+        }
+
+        int[] aux = new int[arr.length];
+        mergeSort(arr, aux, 0, arr.length - 1);
+    }
+
+    private static void mergeSort(int[] arr, int[] aux, int izquierda, int derecha) {
+        if (izquierda >= derecha) {
+            return;
+        }
+
+        int medio = izquierda + (derecha - izquierda) / 2;
+
+        mergeSort(arr, aux, izquierda, medio);
+        mergeSort(arr, aux, medio + 1, derecha);
+
+        // Optimización: si ya está ordenado, no fusionar
+        if (arr[medio] <= arr[medio + 1]) {
+            return;
+        }
+
+        merge(arr, aux, izquierda, medio, derecha);
+    }
+
+    private static void merge(int[] arr, int[] aux, int izquierda, int medio, int derecha) {
+        // Copiar al arreglo auxiliar
+        for (int i = izquierda; i <= derecha; i++) {
+            aux[i] = arr[i];
+        }
+
+        int i = izquierda;
+        int j = medio + 1;
+        int k = izquierda;
+
+        // Mezclar
+        while (i <= medio && j <= derecha) {
+            if (aux[i] <= aux[j]) {
+                arr[k] = aux[i];
+                i++;
+            } else {
+                arr[k] = aux[j];
+                j++;
+            }
+            k++;
+        }
+
+        // Copiar restantes de la izquierda
+        while (i <= medio) {
+            arr[k] = aux[i];
+            i++;
+            k++;
+        }
+
+        // Copiar restantes de la derecha
+        while (j <= derecha) {
+            arr[k] = aux[j];
+            j++;
+            k++;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {38, 27, 43, 3, 9, 82, 10};
+
+        mergeSort(arr);
+
+        System.out.println("Arreglo ordenado:");
+        for (int i = 0; i < arr.length; i++) {
+            System.out.print(arr[i] + " ");
+        }
+    }
+}
