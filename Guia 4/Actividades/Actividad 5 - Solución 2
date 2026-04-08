@@ -1,0 +1,36 @@
+import java.util.Arrays;
+
+public class Moda2 {
+
+    public static int moda(int[] arr) {
+        Arrays.sort(arr);
+
+        int maxCount = 1, count = 1;
+        int moda = arr[0];
+
+        for (int i = 1; i < arr.length; i++) {
+
+            if (arr[i] == arr[i - 1]) {
+                count++;
+            } else {
+                if (count > maxCount) {
+                    maxCount = count;
+                    moda = arr[i - 1];
+                }
+                count = 1;
+            }
+        }
+
+        if (count > maxCount) {
+            moda = arr[arr.length - 1];
+        }
+
+        return moda;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 2, 3, 3, 3, 4};
+        System.out.println("Moda: " + moda(arr));
+    }
+}
+
