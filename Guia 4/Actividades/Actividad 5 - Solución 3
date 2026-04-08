@@ -1,0 +1,45 @@
+import java.util.*;
+
+public class Moda3 {
+
+    public static int moda(int[] arr, int inicio, int fin) {
+
+        // Caso base
+        if (inicio == fin) {
+            return arr[inicio];
+        }
+
+        int medio = (inicio + fin) / 2;
+
+        int izquierda = moda(arr, inicio, medio);
+        int derecha = moda(arr, medio + 1, fin);
+
+        int freqIzq = contar(arr, izquierda);
+        int freqDer = contar(arr, derecha);
+
+        if (freqIzq > freqDer) {
+            return izquierda;
+        } else {
+            return derecha;
+        }
+    }
+
+    // Cuenta frecuencia
+    public static int contar(int[] arr, int valor) {
+        int count = 0;
+        for (int num : arr) {
+            if (num == valor) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 2, 3, 3, 3, 4};
+
+        int resultado = moda(arr, 0, arr.length - 1);
+        System.out.println("Moda: " + resultado);
+    }
+}
+
