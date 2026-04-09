@@ -1,26 +1,37 @@
-import java.io.BufferedInputStream;
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Ejercicio2 {
 
     public static void main(String[] args) throws Exception {
-        FastInput in = new FastInput();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String linea = br.readLine();
 
-        int n = in.nextInt();
-        int[] arr = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            arr[i] = in.nextInt();
+        if (linea == null || linea.trim().isEmpty()) {
+            return;
         }
 
-        int k = in.nextInt();
+        linea = linea.trim();
+
+        int posCierre = linea.indexOf(']');
+        String parteArreglo = linea.substring(1, posCierre);
+        String parteK = linea.substring(posCierre + 1).replace(",", "").trim();
+
+        String[] partes = parteArreglo.split(",");
+        int[] arr = new int[partes.length];
+
+        for (int i = 0; i < partes.length; i++) {
+            arr[i] = Integer.parseInt(partes[i].trim());
+        }
+
+        int k = Integer.parseInt(parteK);
 
         int resultado = kthLargest(arr, k);
         System.out.println(resultado);
     }
 
     static int kthLargest(int[] arr, int k) {
-        int targetIndex = arr.length - k; // convertir a k-ésimo mayor
+        int targetIndex = arr.length - k;
         return quickSelect(arr, 0, arr.length - 1, targetIndex);
     }
 
@@ -59,41 +70,5 @@ public class Ejercicio2 {
         int temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
-    }
-
-    static class FastInput {
-        private final BufferedInputStream in = new BufferedInputStream(System.in);
-        private final byte[] buffer = new byte[1 << 16];
-        private int ptr = 0, len = 0;
-
-        private int read() throws IOException {
-            if (ptr >= len) {
-                len = in.read(buffer);
-                ptr = 0;
-                if (len <= 0) return -1;
-            }
-            return buffer[ptr++];
-        }
-
-        int nextInt() throws IOException {
-            int c;
-            do {
-                c = read();
-            } while (c <= ' ' && c != -1);
-
-            int sign = 1;
-            if (c == '-') {
-                sign = -1;
-                c = read();
-            }
-
-            int num = 0;
-            while (c > ' ') {
-                num = num * 10 + (c - '0');
-                c = read();
-            }
-
-            return num * sign;
-        }
     }
 }
