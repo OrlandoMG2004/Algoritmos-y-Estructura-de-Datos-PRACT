@@ -1,0 +1,8 @@
+package Actividad1;
+
+public interface Stack<E> {
+    void push(E x);                 // Insertar elemento
+    E pop() throws ExceptionIsEmpty; // Eliminar y devolver el tope
+    E top() throws ExceptionIsEmpty; // Ver el tope sin eliminar
+    boolean isEmpty();              // Ver si está vacía
+}
