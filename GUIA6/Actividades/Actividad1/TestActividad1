@@ -1,0 +1,50 @@
+package Actividad1;
+
+public class TestActividad1 {
+    public static void main(String[] args) throws ExceptionIsEmpty {
+
+        // Pila de enteros
+        Stack<Integer> stackInt = new StackArray<>(5);
+
+        System.out.println("Pila de enteros:");
+        stackInt.push(1);
+        stackInt.push(2);
+        stackInt.push(3);
+
+        System.out.println("Top: " + stackInt.top());
+        System.out.println("Pop: " + stackInt.pop());
+        System.out.println("Top después de pop: " + stackInt.top());
+        System.out.println("¿Está vacía? " + stackInt.isEmpty());
+
+        stackInt.pop();
+        stackInt.pop();
+
+        System.out.println("¿Está vacía después de vaciarla? " + stackInt.isEmpty());
+
+        // Pila de Strings
+        Stack<String> stackString = new StackArray<>(5);
+
+        System.out.println("\nPila de cadenas:");
+        stackString.push("Hola");
+        stackString.push("Mundo");
+
+        System.out.println("Top: " + stackString.top());
+        System.out.println("Pop: " + stackString.pop());
+        System.out.println("Top después de pop: " + stackString.top());
+        System.out.println("¿Está vacía? " + stackString.isEmpty());
+
+        stackString.pop();
+
+        System.out.println("¿Está vacía después de vaciarla? " + stackString.isEmpty());
+
+        // Probar pila llena
+        System.out.println("\nProbando pila llena:");
+        for (int i = 0; i < 5; i++) {
+            stackInt.push(i);
+        }
+
+        stackInt.push(6); // Pila llena
+
+        System.out.println("Contenido de la pila: " + stackInt);
+    }
+}
