@@ -1,0 +1,29 @@
+package actividad3;
+
+import Actividad1.ExceptionIsEmpty;
+
+public class TestActividad3 {
+    public static void main(String[] args) throws ExceptionIsEmpty {
+
+        PriorityQueue<String, Integer> pq = new PriorityQueueLinkSort<>();
+
+        // Insertamos elementos
+        pq.enqueue("A", 2);
+        pq.enqueue("B", 5);
+        pq.enqueue("C", 1);
+        pq.enqueue("D", 4);
+
+        // Mostramos la cola
+        System.out.println("Cola de prioridad:");
+        System.out.println(pq);
+
+        // Probamos front y back
+        System.out.println("Front (mayor prioridad): " + pq.front());
+        System.out.println("Back (menor prioridad): " + pq.back());
+
+        // Probamos el dequeue
+        System.out.println("Dequeue: " + pq.dequeue());
+        System.out.println("Después de dequeue:");
+        System.out.println(pq);
+    }
+}
