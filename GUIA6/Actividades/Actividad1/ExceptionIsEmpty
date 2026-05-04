@@ -5,3 +5,4 @@ public class ExceptionIsEmpty extends Exception {
         super(mensaje);
     }
 }
+
