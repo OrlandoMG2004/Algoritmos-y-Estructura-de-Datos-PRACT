@@ -1,7 +1,7 @@
 package Actividad1;
 import Actividad1.*;// Importamos las excepciones que creamos en el paso anterior
 
-public interfaceBinarySearchTree<E> {
+public interface BinarySearchTree<E> {
     // Insertamos un dato en el árbol. Lanza excepción si el dato ya existe.
     void insert(E data) throws ItemDuplicated;
 
