@@ -1,0 +1,16 @@
+package Actividad1;
+import Actividad1.*;// Importamos las excepciones que creamos en el paso anterior
+
+public interface BinarySearchTree<E> {
+    // Insertamos un dato en el árbol. Lanza excepción si el dato ya existe.
+    void insert(E data) throws ItemDuplicated;
+
+    // Buscamos un dato y lo retorna. Lanza excepción si no lo encuentra.
+    E search(E data) throws ItemNotFound;
+
+    // Eliminamos un dato. Lanza excepción si el árbol está vacío.
+    void delete(E data) throws ExceptionIsEmpty;
+
+    // Verifica si el árbol tiene elementos o no.
+    boolean isEmpty();
+}
