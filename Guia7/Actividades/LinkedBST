@@ -149,8 +149,79 @@ public class LinkedBST<E extends Comparable<E>> implements BinarySearchTree<E> {
             System.out.print(node.data + " ");
             
             // 3. Recorrer el subárbol derecho [cite: 411]
-            inOrder(node.right);
-        }
-    }
+            inOrder(node.right); }}
     
+               // Método público para llamar desde la clase Prueba
+        public void preOrder() {
+            System.out.print("Recorrido Pre-Orden: ");
+            preOrder(this.root);
+            System.out.println();}
+       
+        // Método privado recursivo: Raíz - Izquierda - Derecha
+        private void preOrder(Node node) {
+            if (node != null) {
+                // 1. Visitar la raíz (Cabecera)
+                System.out.print(node.data + " ");
+                
+                // 2. Recorrer el subárbol izquierdo
+                preOrder(node.left);
+                
+                // 3. Recorrer el subárbol derecho
+                preOrder(node.right);}}
+         // Método público
+            public void postOrder() {
+                System.out.print("Recorrido Post-Orden: ");
+                postOrder(this.root);
+                System.out.println();
+            }
+
+            // Método privado recursivo: Izquierda - Derecha - Raíz
+            private void postOrder(Node node) {
+                if (node != null) {
+                    // 1. Recorrer el subárbol izquierdo
+                    postOrder(node.left);
+                    
+                    // 2. Recorrer el subárbol derecho
+                    postOrder(node.right);
+                    
+                    // 3. Visitar la raíz (imprimir el dato al final)
+                    System.out.print(node.data + " ");}
+                }
+             // --- MÉTODOS PARA EL MÍNIMO ---
+
+                public E findMin() throws ItemNoFound {
+                    if (isEmpty()) throw new ItemNoFound("El árbol está vacío.");
+                    return findMinNode(this.root);
+                }
+
+                private E findMinNode(Node node) throws ItemNoFound {
+                    Node current = node;
+                    // El mínimo siempre está al fondo a la izquierda
+                    while (current.left != null) {
+                        current = current.left;
+                    }
+                    // Usamos el método search para validar como pide la guía
+                    return search(current.data); 
+                }
+
+                // --- MÉTODOS PARA EL MÁXIMO ---
+
+                public E findMax() throws ItemNoFound {
+                    if (isEmpty()) throw new ItemNoFound("El árbol está vacío.");
+                    return findMaxNode(this.root);
+                }
+
+                private E findMaxNode(Node node) throws ItemNoFound {
+                    Node current = node;
+                    // El máximo siempre está al fondo a la derecha
+                    while (current.right != null) {
+                        current = current.right;
+                    }
+                    // Usamos el método search para validar como pide la guía
+                    return search(current.data);
+                }
 }
+
+
+
+        
