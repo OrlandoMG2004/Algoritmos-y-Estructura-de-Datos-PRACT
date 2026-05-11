@@ -1,5 +1,6 @@
 package Actividad1;
 
+// Importamos las excepciones del paquete donde las tengas
 import Actividad1.*; 
 
 public class LinkedBST<E extends Comparable<E>> implements BinarySearchTree<E> {
@@ -130,4 +131,26 @@ public class LinkedBST<E extends Comparable<E>> implements BinarySearchTree<E> {
     public boolean isEmpty() {
         return this.root == null;
     }
+    
+ // Método público para iniciar el recorrido desde la raíz
+    public void inOrder() {
+        System.out.print("Recorrido In-Orden: ");
+        inOrder(this.root);
+        System.out.println();
+    }
+
+    // Método privado recursivo (Izquierda - Raíz - Derecha)
+    private void inOrder(Node node) {
+        if (node != null) {
+            // 1. Recorrer el subárbol izquierdo [cite: 406]
+            inOrder(node.left);
+            
+            // 2. Visitar la raíz (imprimir el dato) [cite: 415]
+            System.out.print(node.data + " ");
+            
+            // 3. Recorrer el subárbol derecho [cite: 411]
+            inOrder(node.right);
+        }
+    }
+    
 }
