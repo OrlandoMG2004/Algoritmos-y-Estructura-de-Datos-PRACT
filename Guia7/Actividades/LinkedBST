@@ -1,6 +1,5 @@
 package Actividad1;
 
-// Importamos las excepciones del paquete donde las tengas
 import Actividad1.*; 
 
 public class LinkedBST<E extends Comparable<E>> implements BinarySearchTree<E> {
