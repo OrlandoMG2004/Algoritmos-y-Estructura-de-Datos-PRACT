@@ -1,0 +1,134 @@
+package Actividad1;
+
+// Importamos las excepciones del paquete donde las tengas
+import Actividad1.*; 
+
+public class LinkedBST<E extends Comparable<E>> implements BinarySearchTree<E> {
+
+    // Estructura interna del Nodo
+    class Node {
+        public E data;
+        public Node left;
+        public Node right;
+
+        public Node(E data) {
+            this(data, null, null);
+        }
+
+        public Node(E data, Node left, Node right) {
+            this.data = data;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    private Node root;
+
+    public LinkedBST() {
+        this.root = null;
+    }
+
+    // 1. MÉTODO INSERTAR
+    @Override
+    public void insert(E data) throws ItemDuplicated {
+        this.root = insertRecursive(this.root, data);
+    }
+
+    private Node insertRecursive(Node current, E data) throws ItemDuplicated {
+        if (current == null) {
+            return new Node(data);
+        }
+
+        int compare = data.compareTo(current.data);
+        if (compare < 0) {
+            current.left = insertRecursive(current.left, data);
+        } else if (compare > 0) {
+            current.right = insertRecursive(current.right, data);
+        } else {
+            // Si el dato ya existe, lanzamos la excepción
+            throw new ItemDuplicated("Error: El dato '" + data + "' ya existe en el árbol.");
+        }
+        return current;
+    }
+
+    // 2. MÉTODO BUSCAR
+    @Override
+    public E search(E data) throws ItemNoFound {
+        Node result = searchRecursive(this.root, data);
+        if (result == null) {
+            throw new ItemNoFound("Error: No se encontró el dato '" + data + "' en el árbol.");
+        }
+        return result.data;
+    }
+
+    private Node searchRecursive(Node current, E data) {
+        if (current == null || data.equals(current.data)) {
+            return current;
+        }
+        return data.compareTo(current.data) < 0 
+            ? searchRecursive(current.left, data) 
+            : searchRecursive(current.right, data);
+    }
+
+    // 3. MÉTODO ELIMINAR
+    @Override
+    public void delete(E data) throws ExceptionIsEmpty {
+        if (isEmpty()) {
+            throw new ExceptionIsEmpty("Error: El árbol está vacío, no se puede eliminar nada.");
+        }
+        this.root = deleteRecursive(this.root, data);
+    }
+
+    private Node deleteRecursive(Node current, E data) {
+        if (current == null) return null;
+
+        int compare = data.compareTo(current.data);
+        if (compare < 0) {
+            current.left = deleteRecursive(current.left, data);
+        } else if (compare > 0) {
+            current.right = deleteRecursive(current.right, data);
+        } else {
+            // Encontramos el nodo a eliminar
+            if (current.left == null) return current.right;
+            if (current.right == null) return current.left;
+
+            // Caso con dos hijos: buscamos el sucesor (mínimo a la derecha)
+            current.data = findMin(current.right);
+            current.right = deleteRecursive(current.right, current.data);
+        }
+        return current;
+    }
+
+    private E findMin(Node node) {
+        E min = node.data;
+        while (node.left != null) {
+            min = node.left.data;
+            node = node.left;
+        }
+        return min;
+    }
+
+    // 4. MÉTODO TOSTRING (Muestra los datos en orden)
+    @Override
+    public String toString() {
+        if (isEmpty()) return "Árbol vacío";
+        StringBuilder sb = new StringBuilder();
+        sb.append("BST [ ");
+        inOrderTraversal(this.root, sb);
+        sb.append("]");
+        return sb.toString();
+    }
+
+    private void inOrderTraversal(Node node, StringBuilder sb) {
+        if (node != null) {
+            inOrderTraversal(node.left, sb);
+            sb.append(node.data).append(" ");
+            inOrderTraversal(node.right, sb);
+        }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.root == null;
+    }
+}
