@@ -1,1 +1,193 @@
+import java.util.ArrayList;
 
+public class BTree<E extends Comparable<E>> {
+
+    private BNode<E> root;
+    private int orden;
+
+    public BTree(int orden) {
+        this.orden = orden;
+        this.root = null;
+    }
+
+    public boolean isEmpty() {
+        return root == null;
+    }
+
+    private int maxKeys() {
+        return orden - 1;
+    }
+    // METODO PARA INSERTAR
+
+
+    public void insert(E key) {
+        if (root == null) {
+            root = new BNode<>();
+            root.keys.add(key);
+            return;
+        }
+
+        SplitResult<E> result = insertRecursive(root, key);
+
+        if (result != null && result.duplicate) {
+            System.out.println("Clave duplicada: " + key);
+            return;
+        }
+
+        if (result != null) {
+            BNode<E> newRoot = new BNode<>();
+            newRoot.keys.add(result.median);
+            newRoot.childs.add(root);
+            newRoot.childs.add(result.rightNode);
+            root = newRoot;
+        }
+    }
+
+    private SplitResult<E> insertRecursive(BNode<E> current, E key) {
+        int[] pos = new int[1];
+
+        if (current.searchNode(key, pos)) {
+            SplitResult<E> duplicate = new SplitResult<>();
+            duplicate.duplicate = true;
+            return duplicate;
+        }
+
+        if (current.isLeaf()) {
+            current.keys.add(pos[0], key);
+        } else {
+            SplitResult<E> result = insertRecursive(current.childs.get(pos[0]), key);
+
+            if (result != null && result.duplicate) {
+                return result;
+            }
+
+            if (result != null) {
+                current.keys.add(pos[0], result.median);
+                current.childs.add(pos[0] + 1, result.rightNode);
+            }
+        }
+
+        if (current.keys.size() > maxKeys()) {
+            return splitNode(current);
+        }
+
+        return null;
+    }
+
+    private SplitResult<E> splitNode(BNode<E> current) {
+        int middle = current.keys.size() / 2;
+        E median = current.keys.get(middle);
+
+        BNode<E> rightNode = new BNode<>();
+
+        for (int i = middle + 1; i < current.keys.size(); i++) {
+            rightNode.keys.add(current.keys.get(i));
+        }
+
+        if (!current.isLeaf()) {
+            for (int i = middle + 1; i < current.childs.size(); i++) {
+                rightNode.childs.add(current.childs.get(i));
+            }
+        }
+
+        while (current.keys.size() > middle) {
+            current.keys.remove(current.keys.size() - 1);
+        }
+
+        if (!current.isLeaf()) {
+            while (current.childs.size() > middle + 1) {
+                current.childs.remove(current.childs.size() - 1);
+            }
+        }
+
+        SplitResult<E> result = new SplitResult<>();
+        result.median = median;
+        result.rightNode = rightNode;
+        result.duplicate = false;
+
+        return result;
+    }
+
+    private static class SplitResult<E extends Comparable<E>> {
+        E median;
+        BNode<E> rightNode;
+        boolean duplicate;
+    }
+
+    // hACEMOS EL SEARCH
+
+    public boolean search(E key) {
+        return searchRecursive(root, key);
+    }
+
+    private boolean searchRecursive(BNode<E> current, E key) {
+        if (current == null) {
+            System.out.println(key + " no se encuentra en el árbol.");
+            return false;
+        }
+
+        int[] pos = new int[1];
+
+        if (current.searchNode(key, pos)) {
+            System.out.println(key + " se encuentra en el nodo "
+                    + current.idNode + " en la posición " + (pos[0] + 1));
+            return true;
+        }
+
+        if (current.isLeaf()) {
+            System.out.println(key + " no se encuentra en el árbol.");
+            return false;
+        }
+
+        return searchRecursive(current.childs.get(pos[0]), key);
+    }
+
+    
+    // MOSTRAMOS EL ÁRBOL
+    
+
+    @Override
+    public String toString() {
+        if (isEmpty()) {
+            return "BTree is empty...";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Id.Nodo\tClaves Nodo\tId.Padre\tId.Hijos\n");
+        writeTree(root, null, sb);
+
+        return sb.toString();
+    }
+
+    private void writeTree(BNode<E> current, BNode<E> parent, StringBuilder sb) {
+        if (current == null) return;
+
+        sb.append(current.idNode).append("\t");
+        sb.append(current.keys).append("\t\t");
+
+        if (parent == null) {
+            sb.append("--").append("\t\t");
+        } else {
+            sb.append(parent.idNode).append("\t\t");
+        }
+
+        if (current.isLeaf()) {
+            sb.append("--");
+        } else {
+            ArrayList<Integer> ids = new ArrayList<>();
+
+            for (BNode<E> child : current.childs) {
+                ids.add(child.idNode);
+            }
+
+            sb.append(ids);
+        }
+
+        sb.append("\n");
+
+        for (BNode<E> child : current.childs) {
+            writeTree(child, current, sb);
+        }
+    }
+}
