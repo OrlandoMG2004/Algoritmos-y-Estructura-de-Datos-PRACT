@@ -1,0 +1,161 @@
+
+private int minKeys() {
+    return (int) Math.ceil(orden / 2.0) - 1;
+}
+
+public void remove(E key) {
+    if (root == null) {
+        System.out.println("El árbol está vacío.");
+        return;
+    }
+
+    removeRecursive(root, key);
+
+    if (root.keys.isEmpty()) {
+        if (root.isLeaf()) {
+            root = null;
+        } else {
+            root = root.childs.get(0);
+        }
+    }
+}
+
+private void removeRecursive(BNode<E> current, E key) {
+    int idx = findKey(current, key);
+
+    if (idx < current.keys.size() && current.keys.get(idx).compareTo(key) == 0) {
+        if (current.isLeaf()) {
+            removeFromLeaf(current, idx);
+        } else {
+            removeFromInternal(current, idx);
+        }
+    } else {
+        if (current.isLeaf()) {
+            System.out.println("La clave " + key + " no existe en el árbol.");
+            return;
+        }
+
+        boolean lastChild = idx == current.keys.size();
+
+        if (current.childs.get(idx).keys.size() == minKeys()) {
+            fill(current, idx);
+        }
+
+        if (lastChild && idx > current.keys.size()) {
+            removeRecursive(current.childs.get(idx - 1), key);
+        } else {
+            removeRecursive(current.childs.get(idx), key);
+        }
+    }
+}
+
+private int findKey(BNode<E> current, E key) {
+    int idx = 0;
+
+    while (idx < current.keys.size() && current.keys.get(idx).compareTo(key) < 0) {
+        idx++;
+    }
+
+    return idx;
+}
+
+private void removeFromLeaf(BNode<E> current, int idx) {
+    current.keys.remove(idx);
+}
+
+private void removeFromInternal(BNode<E> current, int idx) {
+    E key = current.keys.get(idx);
+
+    BNode<E> leftChild = current.childs.get(idx);
+    BNode<E> rightChild = current.childs.get(idx + 1);
+
+    if (leftChild.keys.size() > minKeys()) {
+        E predecessor = getPredecessor(leftChild);
+        current.keys.set(idx, predecessor);
+        removeRecursive(leftChild, predecessor);
+    } else if (rightChild.keys.size() > minKeys()) {
+        E successor = getSuccessor(rightChild);
+        current.keys.set(idx, successor);
+        removeRecursive(rightChild, successor);
+    } else {
+        merge(current, idx);
+        removeRecursive(leftChild, key);
+    }
+}
+
+private E getPredecessor(BNode<E> current) {
+    while (!current.isLeaf()) {
+        current = current.childs.get(current.childs.size() - 1);
+    }
+
+    return current.keys.get(current.keys.size() - 1);
+}
+
+private E getSuccessor(BNode<E> current) {
+    while (!current.isLeaf()) {
+        current = current.childs.get(0);
+    }
+
+    return current.keys.get(0);
+}
+
+private void fill(BNode<E> current, int idx) {
+    if (idx > 0 && current.childs.get(idx - 1).keys.size() > minKeys()) {
+        borrowFromPrevious(current, idx);
+    } else if (idx < current.keys.size()
+            && current.childs.get(idx + 1).keys.size() > minKeys()) {
+        borrowFromNext(current, idx);
+    } else {
+        if (idx < current.keys.size()) {
+            merge(current, idx);
+        } else {
+            merge(current, idx - 1);
+        }
+    }
+}
+
+private void borrowFromPrevious(BNode<E> current, int idx) {
+    BNode<E> child = current.childs.get(idx);
+    BNode<E> sibling = current.childs.get(idx - 1);
+
+    child.keys.add(0, current.keys.get(idx - 1));
+
+    if (!sibling.isLeaf()) {
+        BNode<E> lastChild = sibling.childs.remove(sibling.childs.size() - 1);
+        child.childs.add(0, lastChild);
+    }
+
+    E borrowedKey = sibling.keys.remove(sibling.keys.size() - 1);
+    current.keys.set(idx - 1, borrowedKey);
+}
+
+private void borrowFromNext(BNode<E> current, int idx) {
+    BNode<E> child = current.childs.get(idx);
+    BNode<E> sibling = current.childs.get(idx + 1);
+
+    child.keys.add(current.keys.get(idx));
+
+    if (!sibling.isLeaf()) {
+        BNode<E> firstChild = sibling.childs.remove(0);
+        child.childs.add(firstChild);
+    }
+
+    E borrowedKey = sibling.keys.remove(0);
+    current.keys.set(idx, borrowedKey);
+}
+
+private void merge(BNode<E> current, int idx) {
+    BNode<E> child = current.childs.get(idx);
+    BNode<E> sibling = current.childs.get(idx + 1);
+
+    E middleKey = current.keys.remove(idx);
+    child.keys.add(middleKey);
+
+    child.keys.addAll(sibling.keys);
+
+    if (!sibling.isLeaf()) {
+        child.childs.addAll(sibling.childs);
+    }
+
+    current.childs.remove(idx + 1);
+}
