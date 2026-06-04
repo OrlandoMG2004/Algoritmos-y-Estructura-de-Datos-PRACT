@@ -1,0 +1,36 @@
+
+// EJERCICIO 02: METODO SEARCH RANGE
+
+
+public void searchRange(E min, E max) {
+    if (min.compareTo(max) > 0) {
+        System.out.println("Rango inválido. El mínimo no puede ser mayor que el máximo.");
+        return;
+    }
+
+    System.out.print("Claves entre " + min + " y " + max + ": ");
+    searchRangeRecursive(root, min, max);
+    System.out.println();
+}
+
+private void searchRangeRecursive(BNode<E> current, E min, E max) {
+    if (current == null) return;
+
+    int i = 0;
+
+    while (i < current.keys.size() && current.keys.get(i).compareTo(min) < 0) {
+        i++;
+    }
+
+    for (; i < current.keys.size() && current.keys.get(i).compareTo(max) <= 0; i++) {
+        if (!current.isLeaf()) {
+            searchRangeRecursive(current.childs.get(i), min, max);
+        }
+
+        System.out.print(current.keys.get(i) + " ");
+    }
+
+    if (!current.isLeaf()) {
+        searchRangeRecursive(current.childs.get(i), min, max);
+    }
+}
