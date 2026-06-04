@@ -1,7 +1,4 @@
 
-// EJERCICIO 02: METODO SEARCH RANGE
-
-
 public void searchRange(E min, E max) {
     if (min.compareTo(max) > 0) {
         System.out.println("Rango inválido. El mínimo no puede ser mayor que el máximo.");
